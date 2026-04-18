@@ -55,6 +55,10 @@
           exec ${pythonWithMempalace}/bin/python3 -m mempalace.mcp_server "$@"
         '';
 
+        mempalace-hook-runner = pkgs.writeShellScriptBin "mempalace-hook-runner" ''
+          exec ${pythonWithMempalace}/bin/python3 -m mempalace hook run "$@"
+        '';
+
         mempalace-claude-plugin = pkgs.runCommand "mempalace-claude-plugin-3.1.0" {} ''
           mkdir -p $out
           cp -r ${mempalace-src}/.claude-plugin/* $out/
@@ -71,7 +75,7 @@
 
       in {
         packages = {
-          inherit mempalace mempalace-mcp mempalace-claude-plugin;
+          inherit mempalace mempalace-mcp mempalace-hook-runner mempalace-claude-plugin;
           default = mempalace;
         };
 
