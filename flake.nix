@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     mempalace-src = {
-      url = "github:milla-jovovich/mempalace";
+      url = "github:milla-jovovich/mempalace/v3.3.5";
       flake = false;
     };
   };
@@ -18,7 +18,7 @@
 
         mempalace = python.pkgs.buildPythonPackage {
           pname = "mempalace";
-          version = "3.1.0";
+          version = "3.3.5";
           pyproject = true;
           src = mempalace-src;
 
@@ -59,7 +59,7 @@
           exec ${pythonWithMempalace}/bin/python3 -m mempalace hook run "$@"
         '';
 
-        mempalace-claude-plugin = pkgs.runCommand "mempalace-claude-plugin-3.1.0" {} ''
+        mempalace-claude-plugin = pkgs.runCommand "mempalace-claude-plugin-3.3.5" {} ''
           mkdir -p $out
           cp -r ${mempalace-src}/.claude-plugin/* $out/
           chmod -R u+w $out
