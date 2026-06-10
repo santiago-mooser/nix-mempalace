@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     mempalace-src = {
-      url = "github:milla-jovovich/mempalace/v3.3.5";
+      url = "github:milla-jovovich/mempalace/v3.4.0";
       flake = false;
     };
   };
@@ -16,9 +16,14 @@
         pkgs = nixpkgs.legacyPackages.${system};
         python = pkgs.python312;
 
+        # The package ships `mempalace` and `mempalace-mcp` console scripts,
+        # which the upstream Claude Code plugin (>= 3.4.0) invokes by bare
+        # name. Install into the user profile so they land on PATH:
+        #   nix profile install ~/repos/nix-mempalace#mempalace
+        # The profile is a GC root, so no manual symlink roots are needed.
         mempalace = python.pkgs.buildPythonPackage {
           pname = "mempalace";
-          version = "3.3.5";
+          version = "3.4.0";
           pyproject = true;
           src = mempalace-src;
 
@@ -33,6 +38,10 @@
           dependencies = [
             python.pkgs.chromadb
             python.pkgs.pyyaml
+            python.pkgs.huggingface-hub
+            python.pkgs.tokenizers
+            python.pkgs.numpy
+            python.pkgs.python-dateutil
           ];
 
           pythonRelaxDeps = [
@@ -51,31 +60,9 @@
 
         pythonWithMempalace = python.withPackages (_: [ mempalace ]);
 
-        mempalace-mcp = pkgs.writeShellScriptBin "mempalace-mcp" ''
-          exec ${pythonWithMempalace}/bin/python3 -m mempalace.mcp_server "$@"
-        '';
-
-        mempalace-hook-runner = pkgs.writeShellScriptBin "mempalace-hook-runner" ''
-          exec ${pythonWithMempalace}/bin/python3 -m mempalace hook run "$@"
-        '';
-
-        mempalace-claude-plugin = pkgs.runCommand "mempalace-claude-plugin-3.3.5" {} ''
-          mkdir -p $out
-          cp -r ${mempalace-src}/.claude-plugin/* $out/
-          chmod -R u+w $out
-
-          substituteInPlace $out/hooks/mempal-stop-hook.sh \
-            --replace-warn "python3 -m mempalace" "${pythonWithMempalace}/bin/python3 -m mempalace"
-          substituteInPlace $out/hooks/mempal-precompact-hook.sh \
-            --replace-warn "python3 -m mempalace" "${pythonWithMempalace}/bin/python3 -m mempalace"
-
-          substituteInPlace $out/plugin.json \
-            --replace-warn '"command": "python3"' '"command": "${pythonWithMempalace}/bin/python3"'
-        '';
-
       in {
         packages = {
-          inherit mempalace mempalace-mcp mempalace-hook-runner mempalace-claude-plugin;
+          inherit mempalace;
           default = mempalace;
         };
 

@@ -21,16 +21,16 @@
     "mempalace-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1778455538,
-        "narHash": "sha256-MOX9HsIhM4LwtYiW25MrkPyTLXZXpSAWVk1NBewzDYA=",
+        "lastModified": 1780735391,
+        "narHash": "sha256-lu8gUEanlY2BeieZc9gnBMeh6j7D4p2t/A7Dd6Zkg0U=",
         "owner": "milla-jovovich",
         "repo": "mempalace",
-        "rev": "d0163a7bec5ee6faa5e86169ed407a7bf41d5582",
+        "rev": "be954671cae5b0764da37259b5fe05cd977af6b3",
         "type": "github"
       },
       "original": {
         "owner": "milla-jovovich",
-        "ref": "v3.3.5",
+        "ref": "v3.4.0",
         "repo": "mempalace",
         "type": "github"
       }
