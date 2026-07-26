@@ -58,11 +58,19 @@
           };
         };
 
+        # An interpreter with mempalace importable from site-packages.
+        # `mempalace.cli:main` pops PYTHONPATH before spawning its mine /
+        # transcript-ingest workers (upstream #1423), which breaks the
+        # PYTHONPATH-based wrapping that buildPythonPackage relies on: the
+        # workers run as `<python> -m mempalace ...` and fail with
+        # "No module named mempalace". Point MEMPALACE_PYTHON at this env so
+        # the import does not depend on inherited environment.
         pythonWithMempalace = python.withPackages (_: [ mempalace ]);
 
       in {
         packages = {
           inherit mempalace;
+          mempalace-python = pythonWithMempalace;
           default = mempalace;
         };
 
