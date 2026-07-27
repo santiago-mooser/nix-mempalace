@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     mempalace-src = {
-      url = "github:milla-jovovich/mempalace/v3.4.0";
+      url = "github:milla-jovovich/mempalace/v3.6.0";
       flake = false;
     };
   };
@@ -23,7 +23,7 @@
         # The profile is a GC root, so no manual symlink roots are needed.
         mempalace = python.pkgs.buildPythonPackage {
           pname = "mempalace";
-          version = "3.4.0";
+          version = "3.6.0";
           pyproject = true;
           src = mempalace-src;
 
