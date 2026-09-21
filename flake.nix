@@ -48,6 +48,11 @@
             "chromadb"
           ];
 
+          makeWrapperArgs = [
+            "--suffix" "NO_PROXY" "," "localhost,127.0.0.1,::1"
+            "--suffix" "no_proxy" "," "localhost,127.0.0.1,::1"
+          ];
+
           doCheck = false;
 
           meta = {
