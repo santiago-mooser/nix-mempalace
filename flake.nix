@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     mempalace-src = {
-      url = "github:milla-jovovich/mempalace/v3.4.0";
+      url = "github:MemPalace/mempalace/v3.10.0";
       flake = false;
     };
   };
@@ -23,7 +23,7 @@
         # The profile is a GC root, so no manual symlink roots are needed.
         mempalace = python.pkgs.buildPythonPackage {
           pname = "mempalace";
-          version = "3.4.0";
+          version = "3.10.0";
           pyproject = true;
           src = mempalace-src;
 
@@ -52,17 +52,25 @@
 
           meta = {
             description = "Give your AI a memory — mine projects and conversations into a searchable palace.";
-            homepage = "https://github.com/milla-jovovich/mempalace";
+            homepage = "https://github.com/MemPalace/mempalace";
             license = pkgs.lib.licenses.mit;
             mainProgram = "mempalace";
           };
         };
 
+        # An interpreter with mempalace importable from site-packages.
+        # `mempalace.cli:main` pops PYTHONPATH before spawning its mine /
+        # transcript-ingest workers (upstream #1423), which breaks the
+        # PYTHONPATH-based wrapping that buildPythonPackage relies on: the
+        # workers run as `<python> -m mempalace ...` and fail with
+        # "No module named mempalace". Point MEMPALACE_PYTHON at this env so
+        # the import does not depend on inherited environment.
         pythonWithMempalace = python.withPackages (_: [ mempalace ]);
 
       in {
         packages = {
           inherit mempalace;
+          mempalace-python = pythonWithMempalace;
           default = mempalace;
         };
 
