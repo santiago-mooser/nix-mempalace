@@ -50,7 +50,6 @@
 
           makeWrapperArgs = [
             "--suffix" "NO_PROXY" "," "localhost,127.0.0.1,::1"
-            "--run" ''export no_proxy="''${no_proxy:-$NO_PROXY}"''
             "--suffix" "no_proxy" "," "localhost,127.0.0.1,::1"
           ];
 
